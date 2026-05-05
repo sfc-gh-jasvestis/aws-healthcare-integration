@@ -26,28 +26,35 @@ with tab1:
         st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
-    qm = session.sql("SELECT MEASURE_NAME, COMPLIANCE_PCT::FLOAT AS COMPLIANCE, GAP_COUNT::INT AS GAPS FROM HEALTHCARE_INTEGRATION.CURATED.QUALITY_MEASURE_COMPLIANCE ORDER BY COMPLIANCE").to_pandas()
+    qm = session.sql("SELECT MEASURE_NAME, COMPLIANCE_PCT::FLOAT AS COMPLIANCE, GAP_COUNT::INT AS GAPS FROM HEALTHCARE_INTEGRATION.CURATED.QUALITY_MEASURE_COMPLIANCE WHERE COMPLIANCE_PCT IS NOT NULL ORDER BY COMPLIANCE").to_pandas()
     if not qm.empty:
         qm["COMPLIANCE"] = pd.to_numeric(qm["COMPLIANCE"], errors="coerce")
         qm["GAPS"] = pd.to_numeric(qm["GAPS"], errors="coerce")
         fig = px.bar(qm, x="COMPLIANCE", y="MEASURE_NAME", orientation="h", color="COMPLIANCE",
-                     color_continuous_scale="RdYlGn", title="Quality Measure Compliance (%)")
+                     color_continuous_scale="RdYlGn", title="Quality Measure Compliance (%)",
+                     range_color=[40, 100])
         fig.add_vline(x=80, line_dash="dash", line_color="red", annotation_text="80% Target")
-        fig.update_layout(height=500, margin=dict(t=40, b=10, l=200))
+        fig.update_layout(height=350, margin=dict(t=40, b=10, l=200))
         st.plotly_chart(fig, use_container_width=True)
         below = qm[qm["COMPLIANCE"] < 80]
         if not below.empty:
             st.warning(f"{len(below)} measures below 80% target — {below['GAPS'].sum():,.0f} total care gaps")
 
 with tab3:
-    gaps = session.sql("SELECT PATIENT_ID, MEASURE_NAME, GAP_TYPE, DAYS_OVERDUE::INT AS DAYS_OVERDUE, PRIORITY FROM HEALTHCARE_INTEGRATION.CURATED.CARE_GAP_IDENTIFICATION ORDER BY PRIORITY DESC, DAYS_OVERDUE DESC LIMIT 50").to_pandas()
+    gap_summary = session.sql("SELECT GAP_TYPE, COUNT(*) AS CNT FROM HEALTHCARE_INTEGRATION.CURATED.CARE_GAP_IDENTIFICATION GROUP BY GAP_TYPE ORDER BY CNT DESC").to_pandas()
+    gap_summary["CNT"] = pd.to_numeric(gap_summary["CNT"], errors="coerce")
+    total_gaps = gap_summary["CNT"].sum()
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Active Care Gaps", f"{total_gaps:,.0f}")
+    c2.metric("Uncontrolled", f"{gap_summary[gap_summary['GAP_TYPE']=='UNCONTROLLED']['CNT'].sum():,.0f}")
+    c3.metric("Missed Follow-up", f"{gap_summary[gap_summary['GAP_TYPE']=='MISSED_FOLLOWUP']['CNT'].sum():,.0f}")
+    fig = px.pie(gap_summary, values="CNT", names="GAP_TYPE", title="Gap Type Distribution",
+                 color_discrete_map={"UNCONTROLLED": "#FF4B4B", "MISSED_FOLLOWUP": "#FFA500", "OVERDUE_SCREENING": "#FFCC00"})
+    fig.update_layout(height=300, margin=dict(t=40, b=10))
+    st.plotly_chart(fig, use_container_width=True)
+    gaps = session.sql("SELECT PATIENT_ID, MEASURE_NAME, GAP_TYPE, DAYS_OVERDUE::INT AS DAYS_OVERDUE, PRIORITY FROM HEALTHCARE_INTEGRATION.CURATED.CARE_GAP_IDENTIFICATION ORDER BY PRIORITY ASC, DAYS_OVERDUE DESC LIMIT 50").to_pandas()
     if not gaps.empty:
         gaps["DAYS_OVERDUE"] = pd.to_numeric(gaps["DAYS_OVERDUE"], errors="coerce")
-        st.metric("Active Care Gaps", f"{len(gaps)}+ (showing top 50)")
-        gap_dist = gaps.groupby("GAP_TYPE").size().reset_index(name="COUNT")
-        fig = px.pie(gap_dist, values="COUNT", names="GAP_TYPE", title="Gap Type Distribution")
-        fig.update_layout(height=300, margin=dict(t=40, b=10))
-        st.plotly_chart(fig, use_container_width=True)
         st.dataframe(gaps, use_container_width=True)
 
 with tab4:
@@ -69,7 +76,7 @@ with tab4:
 
 with tab5:
     st.subheader("Ask the Data")
-    samples = ["How many diabetic patients missed their HbA1c?", "What is the readmission rate by condition?", "Which measures are below 80% compliance?"]
+    samples = ["How many diabetic patients missed their HbA1c?", "Which measures are below 80% compliance?", "What is the total number of care gaps?"]
     sel = st.selectbox("Sample questions:", [""] + samples)
     user_q = st.text_input("Or type your question:") or sel
     if user_q:

@@ -59,7 +59,7 @@ End-to-end population health analytics platform integrating FHIR-compliant clini
 ## Key Narrative Metrics
 
 - **Diabetes HbA1c Control**: 62% compliance (target 80%) — 682 patients in gap
-- **Readmission Rate**: 18% for diabetes patients (vs 7% overall)
+- **Readmission Rate**: 15% for diabetes patients (vs 7% overall)
 - **FHIR Error Rate**: 5.7% (missing references, invalid codes, bad date sequences)
 
 ## Capabilities
