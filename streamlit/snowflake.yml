@@ -1,0 +1,15 @@
+definition_version: 2
+entities:
+  integration_app:
+    type: streamlit
+    identifier:
+      name: INTEGRATION_ANALYTICS_APP
+      schema: APP
+      database: HEALTHCARE_INTEGRATION
+    title: "Population Health & Data Integration"
+    query_warehouse: CORTEX
+    main_file: streamlit_app.py
+    stage: HEALTHCARE_INTEGRATION.APP.STREAMLIT_STAGE
+    artifacts:
+      - streamlit_app.py
+      - environment.yml
