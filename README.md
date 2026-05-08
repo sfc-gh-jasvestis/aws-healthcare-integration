@@ -4,38 +4,22 @@ End-to-end population health analytics platform integrating FHIR-compliant clini
 
 ## Architecture
 
+A FHIR + population-health analytics platform built on **Snowflake** (Snowpipe, Dynamic Tables, semantic view) and **AWS** (S3, SNS, QuickSight). FHIR bundles auto-ingest from S3; Dynamic Tables score quality and care gaps; SNS pushes high-priority outreach to care coordinators.
+
+```mermaid
+flowchart LR
+    EHR[EHR / HIE FHIR bundles] --> S3[S3 landing]
+    S3 --> SP[Snowpipe auto-ingest]
+    SP --> SF[Snowflake RAW]
+    SF --> DT[Dynamic Tables Quality Compliance / Patient Risk / Care Gaps / FHIR Validation]
+    DT --> QV[Quality validation 5.7% error rate]
+    DT --> CG[Care gap alerts high priority]
+    CG --> SNS[Amazon SNS notifications]
+    SNS --> CC[Care coordinators]
+    DT --> ST[Streamlit Population Health]
+    DT --> QS[Amazon QuickSight]
 ```
-┌─────────────┐    ┌─────────┐    ┌───────────┐    ┌───────────────┐
-│ FHIR Bundles│───▶│   S3    │───▶│ Snowpipe  │───▶│   Snowflake   │
-│ (EHR/HIE)   │    │ Landing │    │ Auto-Ingest│    │   RAW Schema  │
-└─────────────┘    └─────────┘    └───────────┘    └───────┬───────┘
-                                                           │
-                                                           ▼
-                                              ┌────────────────────────┐
-                                              │    Dynamic Tables      │
-                                              │  • Quality Compliance  │
-                                              │  • Patient Risk Scores │
-                                              │  • Care Gap ID         │
-                                              │  • FHIR Validation     │
-                                              └────────────┬───────────┘
-                                                           │
-                                              ┌────────────▼───────────┐
-                                              │   Quality Validation   │
-                                              │  5.7% FHIR error rate  │
-                                              │  Missing refs/codes    │
-                                              └────────────┬───────────┘
-                                                           │
-                                              ┌────────────▼───────────┐
-                                              │  Care Gap Alerts       │
-                                              │  High-priority gaps    │
-                                              └────────────┬───────────┘
-                                                           │
-                                                           ▼
-                                              ┌────────────────────────┐
-                                              │   SNS Notifications    │
-                                              │  Care coordinators     │
-                                              └────────────────────────┘
-```
+
 
 ## Personas
 
