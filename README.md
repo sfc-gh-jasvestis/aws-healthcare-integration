@@ -20,48 +20,36 @@ flowchart LR
     DT --> QS[Amazon QuickSight]
 ```
 
-
 ## Personas
 
 | Persona | Role | Key Questions |
 |---------|------|---------------|
-| **Population Health Director** | Oversees quality programs, identifies at-risk populations, manages care coordinator assignments | "Which quality measures are below target?" "Who needs outreach?" |
-| **Chief Medical Officer (CMO)** | Monitors system-wide quality, reviews FHIR compliance, approves pathway changes | "What's our diabetes control rate?" "Are we HEDIS-compliant?" |
+| **Population Health Director** | Quality programs and care coordination | "Which quality measures are below target?" "Who needs outreach?" |
+| **Chief Medical Officer (CMO)** | System-wide quality and compliance | "What's our diabetes control rate?" "Are we HEDIS-compliant?" |
 
-## Data Profile
+## Data
 
-| Entity | Volume | Description |
-|--------|--------|-------------|
-| Patients | 5,000 | APJ-region names, risk tiers (Critical/High/Medium/Low) |
-| Encounters | 53,000 | 50K valid + 3K with deliberate FHIR validation errors |
-| Conditions | 30,000 | Diabetes, Hypertension, COPD, Heart Failure, CKD, Asthma |
-| Observations | 80,000 | HbA1c, BP, BMI, eGFR — 62% diabetes control rate |
-| Care Plans | 10,000 | Active plans linked to patients and conditions |
-| Quality Measures | 20 | HEDIS/CMS measures with compliance targets |
-| Care Pathway Docs | 100 | Clinical pathways for Cortex Search |
+| Table | Rows | Description |
+|-------|------|-------------|
+| PATIENTS | 5,000 | APJ-region names, risk tiers (Critical/High/Medium/Low) |
+| ENCOUNTERS | 53,000 | 50K valid + 3K with deliberate FHIR validation errors |
+| CONDITIONS | 30,000 | Diabetes, Hypertension, COPD, Heart Failure, CKD, Asthma |
+| OBSERVATIONS | 80,000 | HbA1c, BP, BMI, eGFR — 62% diabetes control rate |
+| CARE_PLANS | 10,000 | Active plans linked to patients and conditions |
+| QUALITY_MEASURES | 20 | HEDIS/CMS measures with compliance targets |
+| CARE_PATHWAY_DOCS | 100 | Clinical pathways for Cortex Search |
 
-## Key Narrative Metrics
+## Build Instructions
 
-- **Diabetes HbA1c Control**: 62% compliance (target 80%) — 682 patients in gap
-- **Readmission Rate**: 15% for diabetes patients (vs 7% overall)
-- **FHIR Error Rate**: 5.7% (missing references, invalid codes, bad date sequences)
+### Prerequisites
+- Snowflake account with ACCOUNTADMIN access
+- Cortex AI enabled (ML Functions, Search, Agent)
+- Warehouse: CORTEX (Medium)
+- AWS CLI with SNS, QuickSight access
 
-## Capabilities
-
-| Capability | Implementation |
-|------------|---------------|
-| FHIR Ingestion | S3 stage + Snowpipe auto-ingest from EHR/HIE bundles |
-| Data Quality Validation | Dynamic Table validates missing refs, invalid codes, bad dates (1-min lag) |
-| Quality Measures | HEDIS/CMS compliance tracking across 20 measures |
-| Care Gap Identification | Patient × measure gap detection with priority scoring |
-| Admission Forecasting | Snowflake ML FORECAST by facility (30-day horizon) |
-| SNS Alerting | External Access Integration pushes high-priority gaps to care coordinators |
-| Cortex Agent | Natural language queries on population health + care pathway search |
-
-## Build
+### Deployment
 
 ```bash
--- Execute SQL scripts in order against your Snowflake account
 snowsql -f snowflake/00_setup.sql
 snowsql -f snowflake/01_integrations.sql
 snowsql -f snowflake/02_raw_tables.sql
@@ -71,21 +59,20 @@ snowsql -f snowflake/05_ml.sql
 snowsql -f snowflake/06_semantic.sql
 snowsql -f snowflake/07_agent.sql
 snowsql -f snowflake/08_alerts.sql
-
--- Deploy QuickSight resources
-chmod +x quicksight/deploy.sh && ./quicksight/deploy.sh
 ```
 
-## Tear Down
-
-```bash
--- Remove Snowflake objects
-DROP DATABASE IF EXISTS HEALTHCARE_INTEGRATION;
-
--- Remove AWS resources
-chmod +x aws/teardown.sh && ./aws/teardown.sh
+### Streamlit App
 ```
+HEALTHCARE_INTEGRATION.APP.POPULATION_HEALTH_APP
+```
+
+## Key Demo Numbers
+
+- **Diabetes HbA1c Control** — 62% compliance (target 80%), 682 patients in gap
+- **Readmission Rate** — 15% for diabetes patients (vs 7% overall)
+- **FHIR Error Rate** — 5.7% (missing references, invalid codes, bad date sequences)
+- **SNS alerts** — high-priority care gaps pushed to coordinators in real-time
 
 ## License
 
-Apache 2.0
+Apache 2.0 — See [LICENSE](LICENSE) for details.
