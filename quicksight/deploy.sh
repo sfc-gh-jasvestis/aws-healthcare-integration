@@ -1,8 +1,15 @@
 #!/bin/bash
 # QuickSight Deployment: Healthcare Data Integration
 # Creates data source, datasets, Q topic, and dashboard
+#
+# BEFORE RUNNING: Set the following variables for your environment:
+#   SNOWFLAKE_HOST  - Your Snowflake account URL (e.g., myaccount.snowflakecomputing.com)
+#   QS_SF_PASSWORD  - Password for the QuickSight Snowflake service user
 
 set -euo pipefail
+
+: "${SNOWFLAKE_HOST:?Set SNOWFLAKE_HOST to your Snowflake account URL (e.g. myaccount.snowflakecomputing.com)}"
+: "${QS_SF_PASSWORD:?Set QS_SF_PASSWORD to the password for your QuickSight Snowflake service user}"
 
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 REGION="us-west-2"
@@ -18,8 +25,8 @@ aws quicksight create-data-source \
   --data-source-id "$DATA_SOURCE_ID" \
   --name "HC Integration - Snowflake" \
   --type SNOWFLAKE \
-  --data-source-parameters '{"SnowflakeParameters":{"Host":"__SNOWFLAKE_ACCOUNT__.snowflakecomputing.com","Database":"HEALTHCARE_INTEGRATION","Warehouse":"CORTEX"}}' \
-  --credentials '{"CredentialPair":{"Username":"QUICKSIGHT_HEALTHCARE_SVC","Password":"__QUICKSIGHT_SVC_PASSWORD__"}}' \
+  --data-source-parameters '{"SnowflakeParameters":{"Host":"'"${SNOWFLAKE_HOST}"'","Database":"HEALTHCARE_INTEGRATION","Warehouse":"CORTEX"}}' \
+  --credentials '{"CredentialPair":{"Username":"QUICKSIGHT_HEALTHCARE_SVC","Password":"'"${QS_SF_PASSWORD}"'"}}' \
   --ssl-properties '{"DisableSsl":false}' \
   --permissions '[{"Principal":"'"${QS_USER}"'","Actions":["quicksight:DescribeDataSource","quicksight:DescribeDataSourcePermissions","quicksight:PassDataSource","quicksight:UpdateDataSource","quicksight:DeleteDataSource","quicksight:UpdateDataSourcePermissions"]}]' \
   --region "$REGION" 2>/dev/null && echo "  Created." || echo "  Already exists."
