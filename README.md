@@ -20,6 +20,26 @@ flowchart LR
     DT --> QS[Amazon QuickSight]
 ```
 
+## Snowflake Capabilities
+
+| Capability | Implementation |
+|-----------|---------------|
+| Dynamic Tables | Quality Compliance / Patient Risk / Care Gaps / FHIR Validation |
+| ML Functions | ML.FORECAST admission volume by facility |
+| Cortex Search | 100 clinical care pathway documents indexed |
+| Cortex Agent | PopulationHealthAnalyst + CarePathwaySearch tools |
+| Semantic View | Structured analytics over quality measures and care gaps |
+| Streamlit | Population health dashboard with compliance tracking |
+| Snowpipe | Auto-ingest FHIR bundles from S3 |
+
+## AWS Services
+
+| Service | Role in Demo |
+|---------|-------------|
+| Amazon S3 | Landing zone for FHIR bundles from EHR/HIE systems |
+| Amazon SNS | Push high-priority care gap alerts to coordinators |
+| Amazon QuickSight | Executive quality and compliance dashboard |
+
 ## Personas
 
 | Persona | Role | Key Questions |
