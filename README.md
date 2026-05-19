@@ -94,6 +94,14 @@ Run the SQL scripts in `snowflake/` (skip `01_integrations.sql`) and deploy the 
 ### Full AWS + Snowflake
 Run all SQL scripts including `01_integrations.sql`, deploy the main Streamlit app from `streamlit/`, then run the QuickSight setup from `quicksight/`.
 
+## Business Impact
+
+Industry research and Snowflake customer outcomes:
+- **Reducing readmissions by 1%** saves $2.3M/year per hospital system -- CMS data
+- **FHIR interoperability** saves $1.2M/year per health system in reduced integration costs -- KLAS Research
+- **Care gap closure** improves quality scores by 15-25% and reduces penalties -- Industry benchmark
+- **Sanofi** (Snowflake customer): real-world clinical data platform processes 100M records in minutes -- snowflake.com/customers
+
 ## Key Demo Numbers
 
 - **Diabetes HbA1c Control** — 62% compliance (target 80%), 682 patients in gap
@@ -104,3 +112,5 @@ Run all SQL scripts including `01_integrations.sql`, deploy the main Streamlit a
 ## License
 
 Apache 2.0 — See [LICENSE](LICENSE) for details.
+
+This is a personal demo project and is not an official Snowflake offering. It comes with no support or warranty. Industry metrics cited are from publicly available third-party research and Snowflake customer stories; they represent reported outcomes and are not guarantees of results.
