@@ -101,6 +101,7 @@ Industry research and Snowflake customer outcomes:
 - **FHIR interoperability** saves $1.2M/year per health system in reduced integration costs -- KLAS Research
 - **Care gap closure** improves quality scores by 15-25% and reduces penalties -- Industry benchmark
 - **Sanofi** (Snowflake customer): real-world clinical data platform processes 100M records in minutes -- snowflake.com/customers
+- **AMN Healthcare** achieved 99.9% pipeline success rate and 75% faster runtime after switching to Snowflake -- snowflake.com/customers
 
 ## Key Demo Numbers
 
