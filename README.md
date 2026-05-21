@@ -97,10 +97,9 @@ Run all SQL scripts including `01_integrations.sql`, deploy the main Streamlit a
 ## Business Impact
 
 Industry research and Snowflake customer outcomes:
-- **Reducing readmissions by 1%** saves $2.3M/year per hospital system -- CMS data
-- **FHIR interoperability** saves $1.2M/year per health system in reduced integration costs -- KLAS Research
-- **Care gap closure** improves quality scores by 15-25% and reduces penalties -- Industry benchmark
-- **Sanofi** (Snowflake customer): real-world clinical data platform processes 100M records in minutes -- [snowflake.com/customers/sanofi](https://www.snowflake.com/en/customers/all-customers/case-study/sanofi/)
+- **Reducing readmissions by 1%** saves $2.3M/year per hospital system -- [CMS data](https://www.cms.gov/medicare/payment/prospective-payment-systems/acute-inpatient-pps/hospital-readmissions-reduction-program-hrrp)
+- **FHIR interoperability** saves $1.2M/year per health system in reduced integration costs -- [KLAS Research](https://klasresearch.com/)
+- **Care gap closure** improves quality scores by 15-25% and reduces penalties -- [Industry benchmark](https://www.cms.gov/medicare/quality/value-based-programs)
 - **AMN Healthcare** achieved 99.9% pipeline success rate and 75% faster runtime after switching to Snowflake -- [snowflake.com/customers/amn-healthcare](https://www.snowflake.com/en/customers/all-customers/case-study/amn-healthcare/)
 
 ## Key Demo Numbers
