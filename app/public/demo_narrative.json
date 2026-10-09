@@ -1,0 +1,142 @@
+{
+  "title": "FHIR Feed Integration Operations",
+  "duration": "6 minutes",
+  "thesis": "Snowflake turns daily facility-level FHIR feed activity from a synthetic regional health information exchange into feed completeness and data quality KPIs, 7-day interface incident risk scores, unmapped code anomalies and grounded AI answers, all on curated dynamic tables, with no patient data.",
+  "tabs": [
+    {
+      "id": "executive-cockpit",
+      "persona": {
+        "name": "Hana Lim",
+        "role": "Head of Data Integration (fictional)",
+        "avatar": ""
+      },
+      "talking_points": [
+        "Feed completeness, bundles accepted, bundle rejection rate and interface incidents for 40 facilities across 5 APJ markets.",
+        "Every KPI is a numerator over a denominator in a curated dynamic table, so it can be traced back to facility-day rows.",
+        "The issue-type chart shows which data quality issues turn into interface incidents and which are resolved without escalation."
+      ],
+      "show": [
+        "KPI cards",
+        "Daily issues and incidents",
+        "Issues by type",
+        "Facility table"
+      ],
+      "call_out": "One governed set of feed KPIs, traceable to source rows",
+      "transition": {
+        "next_tab": "predictive",
+        "line": "Which facilities should interface operations look at first?"
+      }
+    },
+    {
+      "id": "predictive",
+      "persona": {
+        "name": "Ravi Menon",
+        "role": "Interface Operations Lead (fictional)",
+        "avatar": ""
+      },
+      "talking_points": [
+        "Snowflake ML classification scores each facility's probability of an interface incident in the next 7 days. It is an operational score, not a clinical prediction.",
+        "The holdout line shows precision and recall on the most recent 14 days, against the base rate.",
+        "Anomaly detection flags unmapped code rate outliers per facility, and the forecast projects accepted bundles for 14 days."
+      ],
+      "show": [
+        "Holdout metrics",
+        "Risk by facility",
+        "Accepted-bundle forecast",
+        "Unmapped code anomalies"
+      ],
+      "call_out": "Honest, evaluated ML inside the data platform",
+      "transition": {
+        "next_tab": "planning",
+        "line": "Are conformance checks keeping up?"
+      }
+    },
+    {
+      "id": "planning",
+      "persona": {
+        "name": "Hana Lim",
+        "role": "Head of Data Integration (fictional)",
+        "avatar": ""
+      },
+      "talking_points": [
+        "Conformance check compliance, FHIR profile conformance and pending profile reviews frame the integration gaps.",
+        "Check compliance against interface incidents by facility shows where missed checks and incidents move together; it is an association, not proof of cause.",
+        "The action memo drafts three prioritised feed operations actions from the KPI, facility, issue-type and risk tables only."
+      ],
+      "show": [
+        "Check compliance and profile conformance",
+        "Check compliance vs incidents",
+        "Action memo"
+      ],
+      "call_out": "Grounded draft actions, with a human in the loop",
+      "transition": {
+        "next_tab": "live",
+        "line": "What happens when a slow bundle delivery lands right now?"
+      }
+    },
+    {
+      "id": "live",
+      "persona": {
+        "name": "Ravi Menon",
+        "role": "Interface Operations Lead (fictional)",
+        "avatar": ""
+      },
+      "talking_points": [
+        "Live bundle delivery events land in RAW.LIVE_BUNDLES, from the simulator or from S3 PutObject through Snowpipe. They carry facility-level metrics only, with no patient identifiers.",
+        "The Snowflake alert logs ALERT events with an SOP hint and the facility's current risk band, then emails the integration team."
+      ],
+      "show": [
+        "Events loaded and lag",
+        "Latest bundle delivery events",
+        "Alert log"
+      ],
+      "call_out": "From bundle delivery to follow-up in one platform",
+      "transition": {
+        "next_tab": "ask-ai",
+        "line": "Now ask the data directly."
+      }
+    },
+    {
+      "id": "ask-ai",
+      "persona": {
+        "name": "Hana Lim",
+        "role": "Head of Data Integration (fictional)",
+        "avatar": ""
+      },
+      "talking_points": [
+        "The Cortex Agent uses Cortex Analyst over the semantic view for metrics, and Cortex Search over 13 synthetic feed operations SOPs.",
+        "Each answer shows the generated SQL and the SOPs it cited."
+      ],
+      "show": [
+        "Ask a sample question",
+        "Generated SQL",
+        "SOP citations"
+      ],
+      "call_out": "Natural-language answers you can audit",
+      "transition": {
+        "next_tab": "architecture",
+        "line": "Here is how it is built."
+      }
+    },
+    {
+      "id": "architecture",
+      "persona": {
+        "name": "Hana Lim",
+        "role": "Head of Data Integration (fictional)",
+        "avatar": ""
+      },
+      "talking_points": [
+        "Two builds share one core: Snowflake only, or AWS + Snowflake (S3, Bedrock, QuickSight and Amazon Q).",
+        "Everything shown is synthetic, facility-level demo data, rebuilt reproducibly from the repo."
+      ],
+      "show": [
+        "Both architecture diagrams"
+      ],
+      "call_out": "One governed core, with an optional AWS edge",
+      "transition": {
+        "next_tab": "",
+        "line": "Questions?"
+      }
+    }
+  ]
+}
